@@ -139,6 +139,7 @@ impl<'a> Render<'a> {
     // because grid-details has no tree view.
 
     pub fn render<W: Write>(mut self, w: &mut W) -> io::Result<()> {
+        // println!("HELLO WORLD");
         if let Some((grid, width)) = self.find_fitting_grid() {
             write!(w, "{}", grid.fit_into_columns(width))
         } else {

@@ -423,6 +423,7 @@ impl<'args> Exa<'args> {
             }
 
             (Mode::Details(ref opts), _) => {
+                // println!("HELLO WORLD");
                 let filter = &self.options.filter;
                 let recurse = self.options.dir_action.recurse_options();
 
@@ -444,7 +445,9 @@ impl<'args> Exa<'args> {
                 r.render(&mut self.writer)
             }
 
+            // DEBUG
             (Mode::GridDetails(ref opts), Some(console_width)) => {
+                // println!("HELLO WORLD");
                 let grid = &opts.grid;
                 let details = &opts.details;
                 let row_threshold = opts.row_threshold;

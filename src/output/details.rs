@@ -158,10 +158,12 @@ impl<'a> AsRef<File<'a>> for Egg<'a> {
 
 impl<'a> Render<'a> {
     pub fn render<W: Write>(mut self, w: &mut W) -> io::Result<()> {
-        let n_cpus = match num_cpus::get() as u32 {
-            0 => 1,
-            n => n,
-        };
+        // let n_cpus = match num_cpus::get() as u32 {
+        //     0 => 1,
+        //     n => n,
+        // };
+
+        let n_cpus = 5;
         let mut pool = Pool::new(n_cpus);
         let mut rows = Vec::new();
 
@@ -192,6 +194,7 @@ impl<'a> Render<'a> {
             let mut table = Table::new(table, self.git, self.theme, self.git_repos);
 
             if self.opts.header {
+                // println!("HELLO WORLD");
                 let header = table.header_row();
                 table.add_widths(&header);
                 rows.push(self.render_header(header));
@@ -213,6 +216,8 @@ impl<'a> Render<'a> {
                 writeln!(w, "{}", row.strings())?;
             }
         } else {
+            // println!("HELLO WORLD");
+            //DEBUGl : THIS IS WHERE FILE WILL BE PRINTOUT  +
             self.add_files_to_table(
                 &mut pool,
                 &mut None,
@@ -243,6 +248,7 @@ impl<'a> Render<'a> {
         xattr_count > 1 || (xattr_count == 1 && !selinux_ctx_shown)
     }
 
+    // DEBUG: IMPORTANT
     /// Adds files to the table, possibly recursively. This is easily
     /// parallelisable, and uses a pool of threads.
     fn add_files_to_table<'dir>(
@@ -256,7 +262,7 @@ impl<'a> Render<'a> {
     ) {
         use crate::fs::feature::xattr;
         use std::sync::{Arc, Mutex};
-
+        // println!("HELLO WORLD");
         let mut file_eggs = (0..src.len())
             .map(|_| MaybeUninit::uninit())
             .collect::<Vec<_>>();
@@ -264,7 +270,7 @@ impl<'a> Render<'a> {
         pool.scoped(|scoped| {
             let file_eggs = Arc::new(Mutex::new(&mut file_eggs));
             let table = table.as_ref();
-
+            // println!("HELLO WORLD");
             for (idx, file) in src.iter().enumerate() {
                 let file_eggs = Arc::clone(&file_eggs);
 
@@ -306,6 +312,7 @@ impl<'a> Render<'a> {
                     let mut dir = None;
                     if let Some(r) = self.recurse {
                         if file.is_directory() && r.tree && !r.is_too_deep(depth.0) {
+                            // println!("HELLO WORLD");
                             trace!("matching on to_dir");
                             match file.to_dir() {
                                 Ok(d) => {
@@ -356,6 +363,8 @@ impl<'a> Render<'a> {
                 name: file_name,
             };
 
+            // println!("{:?}", row);
+
             rows.push(row);
 
             if let Some(ref dir) = egg.dir {
@@ -390,7 +399,7 @@ impl<'a> Render<'a> {
                             path,
                         ));
                     }
-
+                    // println!("---------------------");
                     self.add_files_to_table(
                         pool,
                         table,
@@ -405,14 +414,16 @@ impl<'a> Render<'a> {
 
             let count = egg.xattrs.len();
             for (index, xattr) in egg.xattrs.iter().enumerate() {
+                // println!("HELLO WORLD");
                 let params =
                     TreeParams::new(depth.deeper(), errors.is_empty() && index == count - 1);
                 let r = self.render_xattr(xattr, params);
                 rows.push(r);
             }
-
+            // println!("HELLO WORLD");
             let count = errors.len();
             for (index, (error, path)) in errors.into_iter().enumerate() {
+                // println!("HELLO WORLD");
                 let params = TreeParams::new(depth.deeper(), index == count - 1);
                 let r = self.render_error(&error, params, path);
                 rows.push(r);
@@ -522,8 +533,9 @@ impl<'a> Iterator for TableIter<'a> {
                 cell.add_spaces(self.total_width);
                 cell
             };
-
+            // println!("HELLO WORLD");
             for tree_part in self.tree_trunk.new_row(row.tree) {
+                // println!("HELLO WORLD");
                 cell.push(self.tree_style.paint(tree_part.ascii_art()), 4);
             }
 
@@ -552,7 +564,9 @@ impl Iterator for Iter {
         self.inner.next().map(|row| {
             let mut cell = TextCell::default();
 
+            //DEBUGl IMPORTANT
             for tree_part in self.tree_trunk.new_row(row.tree) {
+                // println!("HELLO WORLD");
                 cell.push(self.tree_style.paint(tree_part.ascii_art()), 4);
             }
 
