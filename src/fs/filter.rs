@@ -112,7 +112,7 @@ impl FileFilter {
     where
         F: AsRef<File<'a>>,
     {
-        files.sort_by(|a, b| self.sort_field.compare_files(a.as_ref(), b.as_ref()));
+        files.sort_unstable_by(|a, b| self.sort_field.compare_files(a.as_ref(), b.as_ref()));
 
         if self.flags.contains(&FileFilterFlags::Reverse) {
             files.reverse();

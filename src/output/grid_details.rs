@@ -143,6 +143,7 @@ impl<'a> Render<'a> {
         if let Some((grid, width)) = self.find_fitting_grid() {
             write!(w, "{}", grid.fit_into_columns(width))
         } else {
+            // println!("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
             self.give_up().render(w)
         }
     }

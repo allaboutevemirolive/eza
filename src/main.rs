@@ -422,6 +422,7 @@ impl<'args> Exa<'args> {
                 r.render(&mut self.writer)
             }
 
+            // DEBUG
             (Mode::Details(ref opts), _) => {
                 // println!("HELLO WORLD");
                 let filter = &self.options.filter;
@@ -442,10 +443,11 @@ impl<'args> Exa<'args> {
                     git,
                     git_repos,
                 };
+                // println!("------------------");
                 r.render(&mut self.writer)
             }
 
-            // DEBUG
+            
             (Mode::GridDetails(ref opts), Some(console_width)) => {
                 // println!("HELLO WORLD");
                 let grid = &opts.grid;
@@ -471,6 +473,7 @@ impl<'args> Exa<'args> {
                     console_width,
                     git_repos,
                 };
+                // println!("------------------");
                 r.render(&mut self.writer)
             }
 

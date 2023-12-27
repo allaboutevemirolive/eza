@@ -158,12 +158,13 @@ impl<'a> AsRef<File<'a>> for Egg<'a> {
 
 impl<'a> Render<'a> {
     pub fn render<W: Write>(mut self, w: &mut W) -> io::Result<()> {
-        // let n_cpus = match num_cpus::get() as u32 {
-        //     0 => 1,
-        //     n => n,
-        // };
+        let n_cpus = match num_cpus::get() as u32 {
+            0 => 1,
+            n => n,
+        };
 
-        let n_cpus = 5;
+        // TODO
+        // let n_cpus = 5;
         let mut pool = Pool::new(n_cpus);
         let mut rows = Vec::new();
 
@@ -177,6 +178,10 @@ impl<'a> Render<'a> {
         );
 
         if let Some(ref table) = self.opts.table {
+            // println!("Passing '--long'");
+            /*
+            This line will be execute if the arg is "eza --tree --long"
+             */
             match (self.git, self.dir) {
                 (Some(g), Some(d)) => {
                     if !g.has_anything_for(&d.path) {
@@ -216,6 +221,10 @@ impl<'a> Render<'a> {
                 writeln!(w, "{}", row.strings())?;
             }
         } else {
+
+             /*
+            This line will be execute if the arg is "eza --tree"
+             */
             // println!("HELLO WORLD");
             //DEBUGl : THIS IS WHERE FILE WILL BE PRINTOUT  +
             self.add_files_to_table(
@@ -230,6 +239,8 @@ impl<'a> Render<'a> {
             for row in self.iterate(rows) {
                 writeln!(w, "{}", row.strings())?;
             }
+
+            
         }
 
         Ok(())
@@ -267,6 +278,7 @@ impl<'a> Render<'a> {
             .map(|_| MaybeUninit::uninit())
             .collect::<Vec<_>>();
 
+        // If pull is SOME(), execute this thread
         pool.scoped(|scoped| {
             let file_eggs = Arc::new(Mutex::new(&mut file_eggs));
             let table = table.as_ref();
